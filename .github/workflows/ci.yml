@@ -1,0 +1,49 @@
+name: Windows checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+          python -m pip install -r requirements-build.txt
+          if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) { choco install ffmpeg -y --no-progress }
+          $ffmpeg = (Get-Command ffmpeg.exe -ErrorAction Stop).Source
+          $ffprobe = Join-Path (Split-Path $ffmpeg) 'ffprobe.exe'
+          if (-not (Test-Path $ffprobe)) { throw 'ffprobe.exe was not found beside ffmpeg.exe' }
+          New-Item -ItemType Directory -Force bin | Out-Null
+          Copy-Item (Get-Command node.exe).Source bin/node.exe
+          Copy-Item $ffmpeg bin/ffmpeg.exe
+          Copy-Item $ffprobe bin/ffprobe.exe
+      - name: Verify source and local conversion
+        shell: pwsh
+        run: |
+          python -m py_compile app.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node --check backend.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest discover -s tests -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build Windows executable
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --onefile --windowed --name 'Sound Sticker Studio' --distpath dist app.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

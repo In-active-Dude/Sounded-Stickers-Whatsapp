@@ -1,0 +1,45 @@
+# Account credentials and pairing artifacts (never commit or share).
+whatsapp_session/
+**/whatsapp_session/
+*.session
+link-whatsapp.png
+.env
+.env.*
+!.env.example
+
+# Installed dependencies, bundled tools and build outputs.
+node_modules/
+bin/
+.venv/
+build/
+dist/
+*.exe
+*.spec
+__pycache__/
+*.py[cod]
+.pytest_cache/
+coverage/
+
+# Runtime files, personal media and logs.
+*.log
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.avi
+*.webp
+*.ogg
+*.wav
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Android Studio and local Android SDK configuration.
+/apk build/
+.gradle/
+.idea/
+local.properties
+*.iml
+.cxx/
+*.apk
+*.aab

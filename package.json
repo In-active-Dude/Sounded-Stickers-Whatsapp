@@ -1,0 +1,37 @@
+{
+  "name": "whatsapp-sound-sticker-bot",
+  "version": "1.0.0",
+  "description": "Desktop app for creating WhatsApp sound stickers.",
+  "main": "backend.cjs",
+  "scripts": {
+    "test": "python -m unittest discover -s tests -v"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "stickers",
+    "baileys",
+    "ffmpeg",
+    "webp",
+    "opus"
+  ],
+  "author": "Ismael Barrionuevo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidRamirez206/whatsapp-sound-sticker-bot.git"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
+    "pino": "^10.4.0",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "postject": "^1.0.0-alpha.6"
+  }
+}
