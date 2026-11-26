@@ -38,6 +38,7 @@ Thumbs.db
 /android-app/
 /apk build/
 android-runtime-prototype/inspect-native/
+android-runtime-prototype/tools/runtime-v6-source.zip
 android-runtime-prototype/app/src/main/assets/runtime.zip
 .gradle/
 .idea/

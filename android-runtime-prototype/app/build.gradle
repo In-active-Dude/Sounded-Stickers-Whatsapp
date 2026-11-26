@@ -12,7 +12,7 @@ android {
     }
     externalNativeBuild { cmake { path 'CMakeLists.txt'; version '3.22.1' } }
     sourceSets { main { jniLibs.srcDirs = ['libnode/bin'] } }
-    packaging { jniLibs { pickFirsts += ['**/libc++_shared.so'] } }
+    packaging { jniLibs { useLegacyPackaging = true; pickFirsts += ['**/libc++_shared.so'] } }
 }
 dependencies {
     implementation 'dev.ffmpegkit-maintained:ffmpeg-kit-full:8.1.9'

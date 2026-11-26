@@ -4,7 +4,7 @@ This Android app selects a video, previews and crops it, converts the selected c
 
 ## Download
 
-[Download the Android APK](https://github.com/In-active-Dude/Sounded-Stickers-Whatsapp/raw/refs/heads/main/android-runtime-prototype/downloads/Sound-Sticker-Studio-Android.apk). This debug-signed build requires Android 10+ on an ARM64 device. Android may ask you to allow installation from your browser or file manager.
+[Download the Android APK](https://github.com/In-active-Dude/Sounded-Stickers-Whatsapp/raw/refs/heads/main/android-runtime-prototype/downloads/Sound-Sticker-Studio-Android.apk). The optimized local debug APK is also at `../apk build/Sound Sticker Studio optimized.apk`. It requires Android 10+ on an ARM64 device.
 
 ## Requirements
 
@@ -26,11 +26,11 @@ The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`. The sou
 ## Use
 
 1. Choose a video with an audio track using the Android file picker.
-2. Set the start and end times (up to 10 seconds), update the preview, and drag over the frame to crop. Tap **Update preview / reset crop** without drawing a crop to use the whole frame.
+2. Set the start and end times (up to 10 seconds), update the preview, and drag over the frame to crop. Drag a corner to resize or drag inside the selection to move it. Use **Square crop** or **Full frame** for quick choices.
 3. Enter the phone number with country code and tap **Link WhatsApp**.
 4. In WhatsApp on the phone, open **Linked devices → Link a device → Link with phone number instead**, then enter the pairing code shown in the app.
 5. After linking, create and send the sticker. Open your own chat to verify it and add it to favorites if desired.
 
-Conversion happens locally. The app keeps the embedded runtime, temporary media, and linked-device credentials in app-private storage. The sticker and audio are uploaded to WhatsApp to send. This is an unofficial Baileys-based client; WhatsApp behavior and sound-sticker support can change. Revoke the linked device in WhatsApp's **Linked devices** settings.
+Conversion happens locally. The app keeps the embedded runtime and linked-device credentials in app-private storage. Conversion intermediates are deleted after they are no longer needed, and the final temporary sticker and audio files are deleted after sending succeeds or fails. If the app is interrupted, abandoned conversion jobs are cleared when it next starts. The sticker and audio are uploaded to WhatsApp to send. This is an unofficial Baileys-based client; WhatsApp behavior and sound-sticker support can change. Revoke the linked device in WhatsApp's **Linked devices** settings.
 
 The launcher uses a custom adaptive icon. The current Android project is still a test build: device-specific WhatsApp compatibility and a production-signed release have not been verified.

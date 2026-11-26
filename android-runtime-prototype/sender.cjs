@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('fs'), path = require('path');
-const base = process.argv[2], commandFile = path.join(base,'command.json'), stateFile = path.join(base,'state.json');
+const base = process.argv[2], cacheRoot=process.argv[3], commandFile = path.join(base,'command.json'), stateFile = path.join(base,'state.json');
+const {jobPath,withJobCleanup}=require('./job-cleanup.cjs');
 const writeState = (status, extra={}) => { const p=stateFile+'.tmp'; fs.writeFileSync(p,JSON.stringify({status,...extra})); fs.renameSync(p,stateFile); };
 const pino = require('pino');
 const {default:makeSocket,useMultiFileAuthState,fetchLatestBaileysVersion,DisconnectReason,jidNormalizedUser,prepareWAMessageMedia,generateWAMessageFromContent,proto} = require('@whiskeysockets/baileys');
@@ -40,17 +41,24 @@ async function connect(number, replace=false) {
   });
 }
 async function send(c){
+  const job=jobPath(cacheRoot,c.job);
+  if(c.audio!==path.join(job,'audio.ogg')||c.webp!==path.join(job,'sticker.webp'))throw new Error('Invalid temporary media paths.');
   if(!ready) throw new Error('Link WhatsApp first.');
   writeState('sending');
   const opt={upload:sock.waUploadToServer};
   const audio=(await prepareWAMessageMedia({audio:fs.readFileSync(c.audio),mimetype:'audio/ogg; codecs=opus',seconds:c.seconds},opt)).audioMessage;
   const sticker=(await prepareWAMessageMedia({sticker:fs.readFileSync(c.webp),isAnimated:true},opt)).stickerMessage;
-  const encoded=proto.Message.AudioMessage.encode(proto.Message.AudioMessage.create({url:audio.url,mimetype:'audio/ogg; codecs=opus',fileSha256:audio.fileSha256,fileLength:audio.fileLength,seconds:c.seconds,ptt:true,mediaKey:audio.mediaKey,fileEncSha256:audio.fileEncSha256,directPath:audio.directPath,mediaKeyTimestamp:audio.mediaKeyTimestamp||Math.floor(Date.now()/1000),waveform:new Uint8Array(64)})).finish();
+  if(!Array.isArray(c.waveform)||c.waveform.length!==64||c.waveform.some(n=>!Number.isInteger(n)||n<0||n>100))throw new Error('Audio waveform is invalid.');
+  const encoded=proto.Message.AudioMessage.encode(proto.Message.AudioMessage.create({url:audio.url,mimetype:'audio/ogg; codecs=opus',fileSha256:audio.fileSha256,fileLength:audio.fileLength,seconds:c.seconds,ptt:true,mediaKey:audio.mediaKey,fileEncSha256:audio.fileEncSha256,directPath:audio.directPath,mediaKeyTimestamp:audio.mediaKeyTimestamp||Math.floor(Date.now()/1000),waveform:Uint8Array.from(c.waveform)})).finish();
   sticker.isAnimated=true; sticker.width=512; sticker.height=512; attachAudio(sticker.fileSha256,encoded);
   try { const chat=jidNormalizedUser(sock.user.id); const msg=generateWAMessageFromContent(chat,{stickerMessage:sticker},{userJid:sock.user.id}); const encodedMessage=Buffer.from(proto.Message.encode(msg.message).finish());const stickerField=findBytesField(parseRawFields(encodedMessage),26);if(!stickerField||!findBytesField(parseRawFields(stickerField.payload),26))throw new Error('Audio was not attached to the sticker.');await sock.relayMessage(chat,msg.message,{messageId:msg.key.id}); writeState('sent'); }
   finally { detachAudio(sticker.fileSha256); }
 }
 function fail(e){connecting=false;writeState('error',{message:String(e.message||e)});}
-writeState('ready');
+writeState('connecting');
+useMultiFileAuthState(path.join(base,sessionName)).then(({state})=>{
+  if(state.creds.registered) return connect('');
+  writeState('ready');
+}).catch(fail);
 let busy=false;
-setInterval(async()=>{if(busy||!fs.existsSync(commandFile))return;busy=true;try{const c=JSON.parse(fs.readFileSync(commandFile,'utf8'));fs.unlinkSync(commandFile);if(c.type==='connect'){if(!/^\d{8,15}$/.test(c.phone)) throw new Error('Enter your phone number with country code, digits only.');await connect(c.phone,true);}else if(c.type==='send'){await send(c);}}catch(e){fail(e)}finally{busy=false}},400);
+setInterval(async()=>{if(busy||!fs.existsSync(commandFile))return;busy=true;try{const c=JSON.parse(fs.readFileSync(commandFile,'utf8'));fs.unlinkSync(commandFile);if(c.type==='connect'){if(!/^\d{8,15}$/.test(c.phone)) throw new Error('Enter your phone number with country code, digits only.');await connect(c.phone,true);}else if(c.type==='send'){await withJobCleanup(cacheRoot,c.job,()=>send(c));}}catch(e){fail(e)}finally{busy=false}},400);
