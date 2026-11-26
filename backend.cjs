@@ -14,7 +14,7 @@ const emit = (kind, data) => process.stdout.write('APP_EVENT:' + JSON.stringify(
 const run = (exe, args) => { const r = spawnSync(exe, args, {encoding:'utf8', windowsHide:true}); if (r.status !== 0) throw new Error((r.stderr || r.error?.message || 'Conversion failed').slice(-800)); };
 const config = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 process.env.PATH = path.join(__dirname, 'bin') + path.delimiter + process.env.PATH;
-const ffmpeg = path.join(__dirname, 'bin', 'ffmpeg.exe');
+const ffmpeg = process.env.FFMPEG_PATH || path.join(__dirname, 'bin', 'ffmpeg.exe');
 let dir;
 async function main() {
   dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sound-sticker-'));

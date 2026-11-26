@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(runtimecheck)
+set(CMAKE_CXX_STANDARD 20)
+add_library(node SHARED IMPORTED)
+set_target_properties(node PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libnode/bin/${ANDROID_ABI}/libnode.so)
+add_library(runtimecheck SHARED src/main/cpp/runtimecheck.cpp)
+target_include_directories(runtimecheck PRIVATE ${CMAKE_SOURCE_DIR}/libnode/include/node)
+target_link_libraries(runtimecheck node log)
