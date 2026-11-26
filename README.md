@@ -30,7 +30,9 @@ The [architecture and UML](docs/ARCHITECTURE.md) describes the components and me
 
 ## Android app
 
-The [Android app guide](android-runtime-prototype/README.md) covers the phone app, which prepares and sends a sound sticker directly from Android. It is separate from the Windows desktop app and uses an unofficial linked WhatsApp client.
+[Download the Android APK](https://github.com/In-active-Dude/Sounded-Stickers-Whatsapp/raw/refs/heads/main/android-runtime-prototype/downloads/Sound-Sticker-Studio-Android.apk) — a debug-signed build for Android 10+ on ARM64 devices.
+
+The [Android app guide](android-runtime-prototype/README.md) covers installation and use. The phone app converts and sends a sound sticker directly from Android using an unofficial linked WhatsApp client.
 
 ## Attribution
 

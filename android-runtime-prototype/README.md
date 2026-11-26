@@ -2,6 +2,10 @@
 
 This Android app selects a video, previews and crops it, converts the selected clip on the phone, then sends a sound sticker to the linked WhatsApp account's own chat. It is separate from the Windows desktop app.
 
+## Download
+
+[Download the Android APK](https://github.com/In-active-Dude/Sounded-Stickers-Whatsapp/raw/refs/heads/main/android-runtime-prototype/downloads/Sound-Sticker-Studio-Android.apk). This debug-signed build requires Android 10+ on an ARM64 device. Android may ask you to allow installation from your browser or file manager.
+
 ## Requirements
 
 - Android 10 (API 29) or newer; the current build targets `arm64-v8a`.
