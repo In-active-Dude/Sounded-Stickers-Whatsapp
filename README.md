@@ -2,6 +2,12 @@
 
 A Windows desktop app that crops and trims a video, creates an animated sticker with its audio, and sends it to your own WhatsApp chat through an unofficial linked client.
 
+## Download
+
+[Download Sound Sticker Studio.exe](https://github.com/In-active-Dude/Sounded-Stickers-Whatsapp/raw/refs/heads/main/Sound%20Sticker%20Studio.exe).
+
+The executable requires `backend.cjs`, `src`, `node_modules` and `bin` alongside it; the EXE alone is not a standalone download.
+
 ## Use the app
 
 1. Run **Sound Sticker Studio.exe** from the project folder. Keep it alongside `backend.cjs`, `src`, `node_modules` and `bin`.
@@ -20,7 +26,7 @@ This is an unofficial implementation using Baileys. WhatsApp may change its prot
 
 ## Development and builds
 
-The [architecture and UML](docs/ARCHITECTURE.md) describes the components and message flow. The [troubleshooting guide](docs/TROUBLESHOOTING.md) covers common failures. The [Android project](android-app/README.md) provides a phone-side companion for preparing a video and opening WhatsApp's sticker creator.
+The [architecture and UML](docs/ARCHITECTURE.md) describes the components and message flow. The [troubleshooting guide](docs/TROUBLESHOOTING.md) covers common failures.
 
 ## Attribution
 
