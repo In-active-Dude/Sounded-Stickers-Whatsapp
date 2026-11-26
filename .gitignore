@@ -35,6 +35,7 @@ coverage/
 Thumbs.db
 
 # Android Studio and local Android SDK configuration.
+/android-app/
 /apk build/
 .gradle/
 .idea/
