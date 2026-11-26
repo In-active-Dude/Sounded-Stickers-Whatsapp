@@ -28,6 +28,10 @@ This is an unofficial implementation using Baileys. WhatsApp may change its prot
 
 The [architecture and UML](docs/ARCHITECTURE.md) describes the components and message flow. The [troubleshooting guide](docs/TROUBLESHOOTING.md) covers common failures.
 
+## Android app
+
+The [Android app guide](android-runtime-prototype/README.md) covers the phone app, which prepares and sends a sound sticker directly from Android. It is separate from the Windows desktop app and uses an unofficial linked WhatsApp client.
+
 ## Attribution
 
-The media processing and WhatsApp message code in `src/` is based on [WhatsApp Sound Sticker Bot](https://github.com/DavidRamirez206/whatsapp-sound-sticker-bot); see [UPSTREAM-LICENSE](UPSTREAM-LICENSE). The distribution also uses Node.js, FFmpeg, Baileys, Pillow and PyInstaller; their licenses apply to their respective components.
+The media processing and WhatsApp message code in `src/` is based on [WhatsApp Sound Sticker Bot](https://github.com/DavidRamirez206/whatsapp-sound-sticker-bot); see [UPSTREAM-LICENSE](UPSTREAM-LICENSE). The Windows app uses Node.js, FFmpeg, Baileys, Pillow and PyInstaller. The Android app uses FFmpegKit and embeds Node.js and Baileys. Their licenses apply to their respective components.

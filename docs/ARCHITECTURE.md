@@ -55,23 +55,33 @@ sequenceDiagram
 
 The app reports the relay operation, not a read receipt or successful playback. `prepareOnly` is an internal offline test path; the UI normally sends after conversion. Error handling and cleanup cannot guarantee removal of temporary files after an abrupt process termination.
 
-## Android companion sequence
+## Android app sequence
 
-The Android project is a separate helper. It does not use the desktop Node sender or create the sticker itself; the user completes that step in WhatsApp.
+The Android app performs conversion locally and embeds the Node sender; it does not depend on the Windows desktop app.
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant App as Android companion
-    participant Picker as Android file picker
-    participant Gallery as Shared video gallery
+    participant App as Android Activity
+    participant Picker as Android document picker
+    participant FFmpeg as FFmpegKit
+    participant Node as Embedded Node runtime
     participant WA as WhatsApp on phone
-    User->>App: Choose an MP4
+    User->>App: Choose a video, set times and crop
     App->>Picker: Open a video document
-    Picker-->>App: Read-only video URI
-    User->>App: Save video to gallery
-    App->>Gallery: Create pending copy and publish it
-    User->>App: Open WhatsApp
-    App->>WA: Launch WhatsApp
-    User->>WA: Create a sticker from the saved video
+    Picker-->>App: Readable video URI
+    App->>App: Validate audio and show a crop preview
+    User->>App: Link WhatsApp
+    App->>Node: Write connect command
+    Node->>WA: Request phone-number pairing
+    WA-->>Node: Pairing code and link state
+    Node-->>App: Update state file
+    User->>App: Create and send sticker
+    App->>FFmpeg: Encode cropped animated WebP and Opus audio
+    App->>Node: Write send command with output paths
+    Node->>WA: Upload media and relay sticker with audio metadata
+    Node-->>App: Update send state
+    App-->>User: Show result
 ```
+
+The Android Activity uses the system document picker and stores its runtime, WhatsApp session, and temporary media in app-private storage. FFmpegKit creates the WebP and Opus files; `AnimatedWebp` assembles animation frames. JNI starts the embedded Node runtime, which reads commands and state files and uses Baileys to link and send. A foreground service keeps the linking process active while the user switches to WhatsApp. The Android build currently targets `arm64-v8a`.

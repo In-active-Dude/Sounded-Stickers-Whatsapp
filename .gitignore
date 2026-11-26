@@ -37,6 +37,8 @@ Thumbs.db
 # Android Studio and local Android SDK configuration.
 /android-app/
 /apk build/
+android-runtime-prototype/inspect-native/
+android-runtime-prototype/app/src/main/assets/runtime.zip
 .gradle/
 .idea/
 local.properties
